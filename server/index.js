@@ -22,21 +22,40 @@ app.get("/status", (req, res) => {
 });
 
 // ✅ **1. Telegram Authentication**
+// ✅ Telegram Authentication (POST request)
 app.post("/auth/telegram", async (req, res) => {
-  try {
-    const { initData } = req.body;
+    const { initData } = req.body; // Extract initData from request body
+
     if (!initData) {
-      console.error("❌ Missing initData from request");
-      return res.status(400).json({ success: false, message: "Missing initData" });
+        return res.status(400).json({ success: false, message: "Missing initData" });
     }
 
-    console.log("✅ Received initData:", initData);
-    res.json({ success: true, message: "Authorized", user: { telegramId: "123456789", username: "TestUser" } });
-  } catch (error) {
-    console.error("❌ Server Error:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
+    try {
+        // Verify Telegram initData (Authentication logic)
+        const user = verifyTelegramAuth(initData);
+        if (!user) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
+        // Save user data in the database (Supabase)
+        const { data, error } = await supabase
+            .from("users")
+            .upsert([{ telegramId: user.id, username: user.username }]);
+
+        if (error) {
+            return res.status(500).json({ success: false, message: "Database error", error });
+        }
+
+        return res.json({ success: true, user: data });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Server error", error });
+    }
 });
+
+function verifyTelegramAuth(initData) {
+    // Dummy function for checking authentication
+    return { id: "12345", username: "testuser" }; // Replace with actual verification logic
+}
 
 // ✅ **2. Get User Data**
 app.get("/user/:telegramId", async (req, res) => {
