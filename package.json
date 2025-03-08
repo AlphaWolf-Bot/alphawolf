@@ -7,6 +7,30 @@
     "start": "node server/index.js"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "@heroicons/react": "^2.2.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "axios": "^1.8.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "framer-motion": "^10.18.0",
+    "mongoose": "^8.12.1",
+    "next": "^13.5.6",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-google-adsense": "^0.0.5",
+    "react-icons": "^4.10.1",
+    "react-spinners": "^0.13.8",
+    "telegraf": "^4.16.3"
+  },
+  "devDependencies": {
+    "@types/react": "19.0.10",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.3",
+    "typescript": "5.8.2"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
