@@ -22,9 +22,9 @@ app.get("/status", (req, res) => {
 });
 
 // ✅ **1. Telegram Authentication**
-app.get("/auth/telegram", async (req, res) => {
+app.post("/auth/telegram", async (req, res) => {
   try {
-    const initData = req.query.initData;
+    const { initData } = req.body;
     if (!initData) {
       console.error("❌ Missing initData from request");
       return res.status(400).json({ success: false, message: "Missing initData" });
@@ -37,8 +37,6 @@ app.get("/auth/telegram", async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
-
-
 
 // ✅ **2. Get User Data**
 app.get("/user/:telegramId", async (req, res) => {
