@@ -1,7 +1,7 @@
 {
   "name": "alphawolf",
   "version": "1.0.0",
-  "type": "module",  // 👈 Add this line
+  "type": "module",
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js"
