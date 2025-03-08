@@ -23,28 +23,38 @@ app.get("/status", (req, res) => {
 
 // ✅ **1. Telegram Authentication**
 app.get("/auth/telegram", async (req, res) => {
-  const { telegramId, username } = req.body;
-
   try {
+    const { initData } = req.query;
+    if (!initData) {
+      console.error("❌ No initData provided");
+      return res.status(400).json({ success: false, message: "Missing initData" });
+    }
+
+    console.log("✅ Received initData:", initData);
+
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const url = `https://api.telegram.org/bot${botToken}/getChat?chat_id=${telegramId}`;
+    if (!botToken) {
+      console.error("❌ Missing TELEGRAM_BOT_TOKEN in .env");
+      return res.status(500).json({ success: false, message: "Server misconfiguration" });
+    }
+
+    const url = `https://api.telegram.org/bot${botToken}/getMe`;
     const response = await axios.get(url);
 
-    if (response.data.ok) {
-      const { data, error } = await supabase
-        .from("users")
-        .upsert([{ telegramId, username }]);
-
-      if (error) return res.status(500).json({ success: false, error });
-
-      return res.json({ success: true, user: data });
-    } else {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
+    if (!response.data.ok) {
+      console.error("❌ Telegram API Error:", response.data);
+      return res.status(500).json({ success: false, message: "Telegram API Error" });
     }
+
+    console.log("✅ Telegram API Connected Successfully:", response.data);
+
+    res.json({ success: true, message: "Authorized" });
   } catch (error) {
-    return res.status(500).json({ success: false, message: "Server error" });
+    console.error("❌ Server Error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
+
 
 // ✅ **2. Get User Data**
 app.get("/user/:telegramId", async (req, res) => {
