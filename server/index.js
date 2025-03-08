@@ -22,7 +22,7 @@ app.get("/status", (req, res) => {
 });
 
 // ✅ **1. Telegram Authentication**
-app.post("/auth/telegram", async (req, res) => {
+app.get("/auth/telegram", async (req, res) => {
   const { telegramId, username } = req.body;
 
   try {
